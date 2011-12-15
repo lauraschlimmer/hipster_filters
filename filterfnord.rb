@@ -22,8 +22,7 @@ private
   def cmd(bin, opts)
     "#{@@bin_file_path}#{bin} #{opts}".tap do |c|
       puts "executing: #{c}"
-      system(c)
-      incr_compositing_step
+      system(c)      
     end
   end
 
@@ -47,6 +46,10 @@ private
     [base_file, compositing_step, :png].join(".")
   end
 
+  def helper_file(key)
+    [base_file, key, :png].join(".")
+  end
+
   def asset_file(filename)
     ::File.join(@@asset_path, filename)
   end
@@ -67,8 +70,16 @@ private
     rand(36**16).to_s(36)
   end
 
-  def cmd_convert(opts)
-    cmd(:convert, "#{current_source_file} #{opts_for_im(opts)} #{current_target_file}")
+  def cmd_convert(in_file=nil, out_file=nil, opts)
+    in_file ||= current_source_file
+    out_file ||= current_target_file
+    cmd(:convert, "#{in_file} #{opts_for_im(opts)} #{out_file}")
+  end
+
+  def cmd_compose(files, out_file=nil, opts)    
+    out_file ||= current_target_file
+    files = [files].flatten.join(" ")
+    cmd(:composite, "#{opts_for_im(opts)} #{files} #{out_file}")
   end
 
   def opts_for_im(opts)
@@ -83,20 +94,38 @@ private
     end
   end
 
+  def width
+    @width
+  end
+
+  def height
+    @height
+  end
+
 end
 
 
-class VintageProcessor < ProcessableImage
+class LensFlareProcessor < ProcessableImage
 
   def process!
     
-    puts asset_file('lensflare_1.png')
-    puts @width
-    puts @height
+    # scale the lensflare to our target width
+    cmd_convert(
+      asset_file('lensflare_1.png'), 
+      helper_file(:lfscreen), 
+      :resize => "#{width}x"
+    )
 
-    # testin'
-    cmd_convert(:resize => "400x")
+    # screen the lensflare into our target image
 
+    cmd_compose(
+      "#{helper_file(:lfscreen)} #{current_source_file}",
+      :compose => "Screen", 
+      :gravity => "NorthWest"
+    )
+
+    # done :)
+    incr_compositing_step
     super
 
   end
@@ -105,6 +134,6 @@ end
 
 
 
-res = VintageProcessor.new('/home/paul/Code/filterfnord/test1.png').process!
+res = LensFlareProcessor.new('/home/paul/Code/filterfnord/test2.jpg').process!
 puts "DONE!: #{res}"
 %x{gnome-open #{res} &> /dev/null}
