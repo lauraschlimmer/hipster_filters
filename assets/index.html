@@ -7,13 +7,35 @@
   <body>
 
     <div style="width:500px; margin:auto; margin-top:150px;">
+
+      <script type="text/javascript">
+        function uploadReady(){
+          var iframe_body = document.getElementById('targetframe').contentDocument.body.innerHTML;
+          if(iframe_body.length == 0) return true;                    
+          var resp = JSON.parse(iframe_body);
+          var elem = $('.result').fadeIn().html('');
+          for(key in resp){            
+            elem.append(
+              $('<div></div>').html(key).append(
+                $('<img width="500" />').attr('src', '/get/'+resp[key])
+              ).css({
+                marginBottom: 15
+              })
+            );            
+          }          
+        }
+      </script>
       
-      <form enctype="multipart/form-data" method="POST" action="/process" target="targetframe" style="border:1px solid #d1d1d1; border-radius:5px; padding:15px; margin-bottom:30px;">
-        <input type="file" name="file" />
+      <form enctype="multipart/form-data" method="POST" action="/process" target="targetframe" style="border:1px solid #d1d1d1; border-radius:5px; padding:15px; margin-bottom:30px;" onsubmit="$('.result').fadeIn();">
+        <input type="file" name="file" onchange="this.form.submit(); $('.result').fadeIn();" />
         <input type="submit" value="GO! (may take a few secs...)">
       </form>
 
-      <iframe name="targetframe" id="targetframe"></iframe>
+      <iframe style="display:none;" name="targetframe" id="targetframe" onload="uploadReady();"></iframe>
+
+      <div class="result" style="display:none; text-align:center;">
+        LOADING... :)
+      </div>
 
     </div>
 
