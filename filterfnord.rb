@@ -1,15 +1,19 @@
 class ProcessableImage
 
+  @@asset_path = ::File.expand_path('../assets', __FILE__)
+
   @@tmp_file_path = '/tmp/'
   @@tmp_file_prefix = "filterfnord_"
   @@bin_file_path = '/usr/bin/'
+  
 
-  def initialize(base_file)
+  def initialize(base_file)    
     @uuid = next_uuid
     create_working_file(base_file)
+    parse_image_size
   end
 
-  def process!    
+  def process!        
     current_source_file
   end
 
@@ -40,7 +44,11 @@ private
   end
 
   def current_file(compositing_step)
-     [base_file, compositing_step, :png].join(".")
+    [base_file, compositing_step, :png].join(".")
+  end
+
+  def asset_file(filename)
+    ::File.join(@@asset_path, filename)
   end
 
   def next_compositing_step
@@ -67,6 +75,14 @@ private
     opts.map{ |k,v| "-#{k} #{v}" }.join(" ")
   end
 
+  def parse_image_size
+    _cmd = %x{#{@@bin_file_path}identify #{current_source_file}}
+    _cmd.match(/ ([0-9]+)x([0-9]+)\+0\+0 /).tap do |sstr|
+      raise "FAIL-O-MATIC: file is not an image?" if sstr.nil?
+      @width = sstr[1]; @height = sstr[2]
+    end
+  end
+
 end
 
 
@@ -74,6 +90,10 @@ class VintageProcessor < ProcessableImage
 
   def process!
     
+    puts asset_file('lensflare_1.png')
+    puts @width
+    puts @height
+
     # testin'
     cmd_convert(:resize => "400x")
 
