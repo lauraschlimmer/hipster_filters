@@ -36,7 +36,7 @@ class VintageProcessor < ProcessableImage
     cmd_convert(
       asset_file('grad_vignette_1.png'), 
       helper_file(:gradvig), 
-      :resize => "#{width}x#{height}"
+      :resize => "#{width}x#{height}!"
     )
 
     # multiply the vignette into our target image

@@ -6,13 +6,15 @@ require "json"
 require 'processable_image'
 require 'lensflare_processor'
 require 'blackwhite_processor'
+require 'vintage_processor'
 
 PROCESSORS = {
-  :lensflare => LensFlareProcessor,
-  :blackwhite => BlackWhiteProcessor
+  :vintage => VintageProcessor,
+  :blackwhite => BlackWhiteProcessor,
+  :lensflare => LensFlareProcessor
 }
 
-allowed_files = {}
+$allowed_files = {}
 
 get "/" do
   File.open(::File.expand_path('../assets/index.html', __FILE__)).read
@@ -20,7 +22,7 @@ end
 
 
 get "/get/:file" do
-  if allowed_files.include?(params[:file])
+  if $allowed_files.include?(params[:file])
   	File.open("/tmp/#{params[:file]}").read
   else
   	"not allowed"
@@ -35,11 +37,18 @@ post '/process' do
     file.write(params[:file][:tempfile].read)
   end
 
-  {}.tap do |ret|
+  orig_file = file_path.gsub('/tmp/', '')
+  allow_file(orig_file)
+
+  { :original => orig_file }.tap do |ret|
     PROCESSORS.each do |k,p|
       out = p.new(file_path).process!.gsub('/tmp/', '')
-      allowed_files[out] = true
+      allow_file(out)
       ret.merge!(k => out)
     end
   end.to_json
+end
+
+def allow_file(f) 
+  $allowed_files[f] = true
 end
