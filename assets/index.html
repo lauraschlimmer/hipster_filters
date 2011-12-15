@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FnordFilter demo</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js' type='text/javascript'></script>
+  </head>
+  <body>
+
+    <div style="width:500px; margin:auto; margin-top:150px;">
+      
+      <form enctype="multipart/form-data" method="POST" action="/process" target="targetframe" style="border:1px solid #d1d1d1; border-radius:5px; padding:15px; margin-bottom:30px;">
+        <input type="file" name="file" />
+        <input type="submit" value="GO! (may take a few secs...)">
+      </form>
+
+      <iframe name="targetframe" id="targetframe"></iframe>
+
+    </div>
+
+  </body>
+</html>
