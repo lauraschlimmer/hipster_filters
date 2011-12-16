@@ -8,6 +8,11 @@ require 'lensflare_processor'
 require 'blackwhite_processor'
 require 'vintage_processor'
 
+
+# 
+# this is ugly, because it's only for demonstration purposes...
+#
+
 PROCESSORS = {
   :vintage => VintageProcessor,
   :blackwhite => BlackWhiteProcessor,
@@ -20,7 +25,6 @@ get "/" do
   File.open(::File.expand_path('../assets/index.html', __FILE__)).read
 end
 
-
 get "/get/:file" do
   if $allowed_files.include?(params[:file])
   	File.open("/tmp/#{params[:file]}").read
@@ -28,7 +32,6 @@ get "/get/:file" do
   	"not allowed"
   end
 end
-
 
 post '/process' do
   file_path = "/tmp/fnordfilter.upload.#{rand(36**16).to_s(36)}"

@@ -1,0 +1,32 @@
+= hipster_filters
+
+fancy instagram-ish photo filters with imagemagick+ruby. currently: lens-flair, black+white and vintage.
+
+==== original:
+{<img src="https://raw.github.com/paulasmuth/hipster_filters/master/examples/preview1.png" />}[https://github.com/paulasmuth/hipster_filters]
+
+==== vintage:
+{<img src="https://raw.github.com/paulasmuth/hipster_filters/master/examples/preview2.png" />}[https://github.com/paulasmuth/hipster_filters]
+
+==== lens-flare:
+{<img src="https://raw.github.com/paulasmuth/hipster_filters/master/examples/preview4.png" />}[https://github.com/paulasmuth/hipster_filters]
+
+==== black&white:
+{<img src="https://raw.github.com/paulasmuth/hipster_filters/master/examples/preview3.png" />}[https://github.com/paulasmuth/hipster_filters]
+
+
+== Usage
+  
+  VintageProcessor.new('/Users/paul/test.png')
+    => "/tmp/fnordfilter.blc2onp3.4.png"
+
+  BlackWhiteProcessor.new('/Users/paul/test.png')
+    => "/tmp/fnordfilter.sx04bacf.1.png"
+
+  LensFlareProcessor.new('/Users/paul/test.png')
+    => "/tmp/fnordfilter.f04jknys.1.png"
+
+
+== Demo
+
+http://obelix.23loc.com:4567/
